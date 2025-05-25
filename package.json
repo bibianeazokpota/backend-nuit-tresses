@@ -1,6 +1,18 @@
 {
+  "name": "backend-nuit-tresses",
+  "version": "1.0.0",
+  "description": "Backend pour le formulaire de la Nuit des Tresses Africaines 3",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "Bibiane Azokpota",
+  "license": "ISC",
   "dependencies": {
     "cloudinary": "^2.6.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "multer": "^2.0.0"
   }
 }
