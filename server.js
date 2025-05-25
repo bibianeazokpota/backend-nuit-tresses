@@ -8,6 +8,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("API Nuit des Tresses en ligne ✨");
+});
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads"),
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
@@ -20,12 +24,11 @@ app.post("/api/candidature", upload.array("photos", 5), async (req, res) => {
     const urls = [];
 
     for (const file of files) {
-      const result = await uploader.upload(file.path); // Upload dans dossier "nuit-des-tresses"
+      const result = await uploader.upload(file.path);
       urls.push(result.secure_url);
-      fs.unlinkSync(file.path); // Supprime localement
+      fs.unlinkSync(file.path);
     }
 
-    // Récupérer autres champs formulaire
     const data = {
       nom: req.body.nom,
       salon: req.body.salon,
@@ -49,4 +52,5 @@ app.post("/api/candidature", upload.array("photos", 5), async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log("Serveur en écoute sur http://localhost:3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Serveur en écoute sur http://localhost:${PORT}`));
