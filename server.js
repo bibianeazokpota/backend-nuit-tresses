@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const { uploader } = require("./cloudinary");
 const fs = require("fs");
 const path = require("path");
+const fetch = require("node-fetch"); // <-- ajouté pour faire la requête vers Google Apps Script
 
 const app = express();
 
@@ -70,8 +71,19 @@ app.post("/api/candidature", upload.array("photos", 5), async (req, res) => {
       photos: urls,
     };
 
-    console.log("✅ Nouvelle candidature :", data);
-    res.status(200).json({ message: "Dossier reçu", data });
+    // Envoi des données à Google Apps Script
+    const responseGoogle = await fetch("https://script.google.com/macros/s/AKfycbzdlMRtQ8AT-tUH-YKuwa0Q41c_p-jJW8ESWL3MGS-MNg9S9f0Kp7Qk3f034dsA6Th6/exec", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const textGoogle = await responseGoogle.text();
+    console.log("Réponse Google Apps Script :", textGoogle);
+
+    res.status(200).json({ message: "Dossier reçu et envoyé à la feuille", data });
   } catch (error) {
     console.error("❌ Erreur serveur :", error);
     res.status(500).json({ error: "Erreur serveur" });
@@ -80,4 +92,3 @@ app.post("/api/candidature", upload.array("photos", 5), async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Serveur en écoute sur http://localhost:${PORT}`));
-
