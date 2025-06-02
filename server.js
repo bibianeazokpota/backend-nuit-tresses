@@ -12,11 +12,12 @@ const app = express();
 // Sécurité minimale
 app.use(helmet());
 
-// CORS : accepte uniquement ton frontend
 app.use(cors({
-  origin: "https://bibianeazokpota.github.io", 
+  origin: "https://bibianeazokpota.github.io",
   credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'], 
 }));
+
 
 app.use(express.json());
 
