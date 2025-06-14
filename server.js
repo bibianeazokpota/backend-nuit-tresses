@@ -5,11 +5,10 @@ const helmet = require("helmet");
 const { uploader } = require("./cloudinary");
 const fs = require("fs");
 const path = require("path");
-const fetch = require("node-fetch"); // <-- ajouté pour faire la requête vers Google Apps Script
+const fetch = require("node-fetch");
 
 const app = express();
 
-// Sécurité minimale
 app.use(helmet());
 
 app.use(cors({
@@ -18,10 +17,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'OPTIONS'], 
 }));
 
-
 app.use(express.json());
 
-// Politique CSP pour éviter les blocages de contenu
 app.use((req, res, next) => {
   res.setHeader("Content-Security-Policy", "default-src 'self'; img-src * data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'");
   next();
@@ -69,10 +66,11 @@ app.post("/api/candidature", upload.array("photos", 5), async (req, res) => {
       details_evenement: req.body.details_evenement,
       portfolio: req.body.portfolio,
       motivation: req.body.motivation,
+      dispo: req.body.dispo,
+      conditions: req.body.conditions,
       photos: urls,
     };
 
-    // Envoi des données à Google Apps Script
     const responseGoogle = await fetch("https://script.google.com/macros/s/AKfycbzdlMRtQ8AT-tUH-YKuwa0Q41c_p-jJW8ESWL3MGS-MNg9S9f0Kp7Qk3f034dsA6Th6/exec", {
       method: "POST",
       headers: {
